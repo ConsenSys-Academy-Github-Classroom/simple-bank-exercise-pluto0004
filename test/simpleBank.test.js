@@ -10,7 +10,7 @@ with `npm install -g truffle`.
 */
 // const { catchRevert } = require("./exceptionsHelpers.js");
 var SimpleBank = artifacts.require("./SimpleBank.sol");
-const { expectRevert } = require('@openzeppelin/test-helpers');
+const { expectRevert } = require("@openzeppelin/test-helpers");
 
 contract("SimpleBank", function (accounts) {
   const [contractOwner, alice] = accounts;
@@ -20,12 +20,12 @@ contract("SimpleBank", function (accounts) {
     instance = await SimpleBank.new();
   });
 
-//   it("ready to be solved!", async() => {
-//     const eth1000 = 1e21;
-//     // const aliceBalace = await web3.eth.getBalance(alice);
-//     // console.log(aliceBalance);
-//     assert.equal(await web3.eth.getBalance(alice), eth1000);
-//   });
+  it("ready to be solved!", async () => {
+    const eth1000 = 100e18;
+    // const aliceBalace = await web3.eth.getBalance(alice);
+    // console.log(aliceBalance);
+    assert.equal(await web3.eth.getBalance(alice), eth1000);
+  });
 
   it("is owned by owner", async () => {
     assert.equal(
@@ -37,7 +37,7 @@ contract("SimpleBank", function (accounts) {
       //   2: https://docs.soliditylang.org/en/v0.8.5/contracts.html#getter-functions
       await instance.owner.call(),
       contractOwner,
-      "owner is not correct",
+      "owner is not correct"
     );
   });
 
@@ -48,16 +48,18 @@ contract("SimpleBank", function (accounts) {
     assert.equal(
       aliceEnrolled,
       true,
-      "enroll balance is incorrect, check balance method or constructor",
+      "enroll balance is incorrect, check balance method or constructor"
     );
   });
 
   it("should not mark unenrolled users as enrolled", async () => {
-    const ownerEnrolled = await instance.enrolled(contractOwner, { from: contractOwner });
+    const ownerEnrolled = await instance.enrolled(contractOwner, {
+      from: contractOwner,
+    });
     assert.equal(
       ownerEnrolled,
       false,
-      "only enrolled users should be marked enrolled",
+      "only enrolled users should be marked enrolled"
     );
   });
 
@@ -69,7 +71,7 @@ contract("SimpleBank", function (accounts) {
     assert.equal(
       deposit.toString(),
       balance,
-      "deposit amount incorrect, check deposit method",
+      "deposit amount incorrect, check deposit method"
     );
   });
 
@@ -85,13 +87,13 @@ contract("SimpleBank", function (accounts) {
     assert.equal(
       expectedEventResult.accountAddress,
       logAccountAddress,
-      "LogDepositMade event accountAddress property not emitted, check deposit method",
+      "LogDepositMade event accountAddress property not emitted, check deposit method"
     );
 
     assert.equal(
       expectedEventResult.amount,
       logDepositAmount,
-      "LogDepositMade event amount property not emitted, check deposit method",
+      "LogDepositMade event amount property not emitted, check deposit method"
     );
   });
 
@@ -105,14 +107,16 @@ contract("SimpleBank", function (accounts) {
     assert.equal(
       balance.toString(),
       initialAmount.toString(),
-      "balance incorrect after withdrawal, check withdraw method",
+      "balance incorrect after withdrawal, check withdraw method"
     );
   });
 
   it("should not be able to withdraw more than has been deposited", async () => {
     await instance.enroll({ from: alice });
     await instance.deposit({ from: alice, value: deposit });
-    await expectRevert.unspecified(instance.withdraw(deposit + 1, { from: alice }));
+    await expectRevert.unspecified(
+      instance.withdraw(deposit + 1, { from: alice })
+    );
   });
 
   it("should emit the appropriate event when a withdrawal is made", async () => {
@@ -134,17 +138,17 @@ contract("SimpleBank", function (accounts) {
     assert.equal(
       expectedEventResult.accountAddress,
       accountAddress,
-      "LogWithdrawal event accountAddress property not emitted, check deposit method",
+      "LogWithdrawal event accountAddress property not emitted, check deposit method"
     );
     assert.equal(
       expectedEventResult.newBalance,
       newBalance,
-      "LogWithdrawal event newBalance property not emitted, check deposit method",
+      "LogWithdrawal event newBalance property not emitted, check deposit method"
     );
     assert.equal(
       expectedEventResult.withdrawAmount,
       withdrawAmount,
-      "LogWithdrawal event withdrawalAmount property not emitted, check deposit method",
+      "LogWithdrawal event withdrawalAmount property not emitted, check deposit method"
     );
   });
 });
